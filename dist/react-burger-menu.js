@@ -109,10 +109,11 @@ exports['default'] = {
     pushRotate: require('./menus/pushRotate'),
     scaleDown: require('./menus/scaleDown'),
     scaleRotate: require('./menus/scaleRotate'),
-    fallDown: require('./menus/fallDown')
+    fallDown: require('./menus/fallDown'),
+    menuFactory: require('./menuFactory')
 };
 module.exports = exports['default'];
-},{"./menus/bubble":6,"./menus/elastic":7,"./menus/fallDown":8,"./menus/push":9,"./menus/pushRotate":10,"./menus/scaleDown":11,"./menus/scaleRotate":12,"./menus/slide":13,"./menus/stack":14}],3:[function(require,module,exports){
+},{"./menuFactory":5,"./menus/bubble":6,"./menus/elastic":7,"./menus/fallDown":8,"./menus/push":9,"./menus/pushRotate":10,"./menus/scaleDown":11,"./menus/scaleRotate":12,"./menus/slide":13,"./menus/stack":14}],3:[function(require,module,exports){
 (function (global){
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -259,6 +260,17 @@ module.exports = exports['default'];
 (function (global){
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
+var _extends = Object.assign || function (target) {
+        for (var i = 1; i < arguments.length; i++) {
+            var source = arguments[i];
+            for (var key in source) {
+                if (Object.prototype.hasOwnProperty.call(source, key)) {
+                    target[key] = source[key];
+                }
+            }
+        }
+        return target;
+    };
 function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : { 'default': obj };
 }
@@ -287,6 +299,7 @@ exports['default'] = function (styles) {
             ]),
             id: _react2['default'].PropTypes.string,
             isOpen: _react2['default'].PropTypes.bool,
+            mouseEvents: _react2['default'].PropTypes.bool,
             noOverlay: _react2['default'].PropTypes.bool,
             onStateChange: _react2['default'].PropTypes.func,
             outerContainerId: styles && styles.outerContainer ? _react2['default'].PropTypes.string.isRequired : _react2['default'].PropTypes.string,
@@ -368,6 +381,7 @@ exports['default'] = function (styles) {
         getDefaultProps: function getDefaultProps() {
             return {
                 id: '',
+                mouseEvents: false,
                 noOverlay: false,
                 onStateChange: function onStateChange() {
                 },
@@ -422,15 +436,25 @@ exports['default'] = function (styles) {
         },
         render: function render() {
             var _this3 = this;
+            var menuWrapProps = {};
+            if (this.props.mouseEvents) {
+                menuWrapProps = {
+                    onMouseEnter: this.toggleMenu,
+                    onMouseLeave: this.toggleMenu
+                };
+            }
+            ;
+            var menuState = this.state.isOpen ? 'open' : 'close';
+            var menuWrapClassNames = 'bm-menu-wrap bm-menu-state-' + menuState;
             return _react2['default'].createElement('div', null, !this.props.noOverlay ? _react2['default'].createElement('div', {
                 className: 'bm-overlay',
                 onClick: this.toggleMenu,
                 style: this.getStyles('overlay')
-            }) : null, _react2['default'].createElement('div', {
+            }) : null, _react2['default'].createElement('div', _extends({
                 id: this.props.id,
-                className: 'bm-menu-wrap',
+                className: menuWrapClassNames,
                 style: this.getStyles('menuWrap')
-            }, styles.svg ? _react2['default'].createElement('div', {
+            }, menuWrapProps), styles.svg ? _react2['default'].createElement('div', {
                 className: 'bm-morph-shape',
                 style: this.getStyles('morphShape')
             }, _react2['default'].createElement('svg', {
