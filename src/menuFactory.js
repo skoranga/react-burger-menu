@@ -43,6 +43,23 @@ export default (styles) => {
       });
     },
 
+    toggleMenuState(menuState) {
+	    const newState = { isOpen: menuState };
+
+      this.applyWrapperStyles();
+
+      this.setState(newState, () => {
+        this.props.onStateChange(newState);
+
+        // Timeout ensures wrappers are cleared after animation finishes.
+        setTimeout(() => {
+          if (!newState.isOpen) {
+            this.clearWrapperStyles();
+          }
+        }, 500);
+      });
+    },
+
     // Applies component-specific styles to external wrapper elements.
     applyWrapperStyles() {
       if (styles.pageWrap && this.props.pageWrapId) {
@@ -197,8 +214,8 @@ export default (styles) => {
       let menuWrapProps = {};
       if (this.props.mouseEvents) {
         menuWrapProps = {
-          onMouseEnter: this.toggleMenu,
-          onMouseLeave: this.toggleMenu
+          onMouseEnter: () => this.toggleMenuState(true),
+          onMouseLeave: () => this.toggleMenuState(false)
         };
       };
       let menuState = this.state.isOpen ? 'open' : 'close';

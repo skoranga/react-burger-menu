@@ -321,6 +321,19 @@ exports['default'] = function (styles) {
                 }, 500);
             });
         },
+        toggleMenuState: function toggleMenuState(menuState) {
+            var _this2 = this;
+            var newState = { isOpen: menuState };
+            this.applyWrapperStyles();
+            this.setState(newState, function () {
+                _this2.props.onStateChange(newState);
+                setTimeout(function () {
+                    if (!newState.isOpen) {
+                        _this2.clearWrapperStyles();
+                    }
+                }, 500);
+            });
+        },
         applyWrapperStyles: function applyWrapperStyles() {
             if (styles.pageWrap && this.props.pageWrapId) {
                 this.handleExternalWrapper(this.props.pageWrapId, styles.pageWrap, true);
@@ -414,12 +427,12 @@ exports['default'] = function (styles) {
             this.clearWrapperStyles();
         },
         componentDidUpdate: function componentDidUpdate() {
-            var _this2 = this;
+            var _this3 = this;
             if (styles.svg && this.isMounted()) {
                 (function () {
-                    var morphShape = _reactDom2['default'].findDOMNode(_this2, 'bm-morph-shape');
+                    var morphShape = _reactDom2['default'].findDOMNode(_this3, 'bm-morph-shape');
                     var path = styles.svg.lib(morphShape).select('path');
-                    if (_this2.state.isOpen) {
+                    if (_this3.state.isOpen) {
                         styles.svg.animate(path);
                     } else {
                         setTimeout(function () {
@@ -435,12 +448,16 @@ exports['default'] = function (styles) {
             }
         },
         render: function render() {
-            var _this3 = this;
+            var _this4 = this;
             var menuWrapProps = {};
             if (this.props.mouseEvents) {
                 menuWrapProps = {
-                    onMouseEnter: this.toggleMenu,
-                    onMouseLeave: this.toggleMenu
+                    onMouseEnter: function onMouseEnter() {
+                        return _this4.toggleMenuState(true);
+                    },
+                    onMouseLeave: function onMouseLeave() {
+                        return _this4.toggleMenuState(false);
+                    }
                 };
             }
             ;
@@ -472,7 +489,7 @@ exports['default'] = function (styles) {
                 if (item) {
                     var extraProps = {
                             key: index,
-                            style: _this3.getStyles('item', index, item.props.style)
+                            style: _this4.getStyles('item', index, item.props.style)
                         };
                     return _react2['default'].cloneElement(item, extraProps);
                 }
